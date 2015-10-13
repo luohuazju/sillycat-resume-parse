@@ -3,13 +3,13 @@ package com.sillycat.resumeparse;
 import java.io.IOException;
 import java.io.InputStream;
 
-import opennlp.tools.tokenize.Tokenizer;
 import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
+import opennlp.tools.util.Span;
 
 public class OpenNLPTokenizerMain {
-	
-	static final String SAMPLE_STR = "I am Carl. I am a software engineer. Totally I worked 12 years. About 9 years in China, 3 years in US.";
+
+	static final String SAMPLE_STR = "I am Carl. I am a software engineer.";
 
 	public static void main(String[] args) {
 
@@ -29,10 +29,15 @@ public class OpenNLPTokenizerMain {
 			}
 		}
 
-		Tokenizer tokenizer = new TokenizerME(model);
-		String tokens[] = tokenizer.tokenize(SAMPLE_STR);
-		for (int i = 0 ; i< tokens.length;i++){
-			System.out.println(i + " " + tokens[i]);
+		TokenizerME tokenizer = new TokenizerME(model);
+		Span[] spans = tokenizer.tokenizePos(SAMPLE_STR);
+		double[] tokenProbabilities = tokenizer.getTokenProbabilities();
+		for (int i = 0; i < spans.length; i++) {
+			int start = spans[i].getStart();
+			int end = spans[i].getEnd();
+			String value = SAMPLE_STR.substring(start, end);
+			System.out.println(i + " possibility: " + tokenProbabilities[i]
+					+ " string:" + value);
 		}
 	}
 
